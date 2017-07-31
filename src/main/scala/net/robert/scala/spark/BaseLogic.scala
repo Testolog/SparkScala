@@ -7,13 +7,13 @@ import org.apache.spark.sql.types.{ArrayType, DataType, StringType}
 class BaseLogic {
 
   def info(dataFrame: DataFrame): DataFrame = {
-    var base = dataFrame.columns.foldLeft(dataFrame)((acc, name) => {
-      countByName(acc, name)
-    })
-
-    base.show()
-
-    dataFrame
+//    var base = dataFrame.columns.foldLeft(dataFrame)((acc, name) => {
+//      countByName(acc, name)
+//    })
+//
+//    base.show()
+//
+//    dataFrame
     countByName(dataFrame, "name")
   }
 
@@ -22,10 +22,10 @@ class BaseLogic {
     val base = dataFrame.repartition(3)
       .select(lit(name).alias("key"), col(name).alias("value"))
       .groupBy(col("value"))
-      .agg(countDistinct(col("value")).alias("unique_value"))
+      .agg(countDistinct(col("value")).alias("unique_value")).repartition(3)
       .select(array(col("value"), col("unique_value")).alias("values"), lit(name).alias("key"))
     val uniqueCount = dataFrame.repartition(3).select(lit(name).alias("key"), countDistinct(col(name)).alias("unique_count"))
-    base.join(uniqueCount)
+    base.join(uniqueCount).repartition(3)
       .select(base.apply("key"), col("values"), col("unique_count"))
       .repartition(3)
       .groupBy("key", "unique_count")
@@ -43,6 +43,9 @@ class BaseLogic {
   }
 
   def transfer(dataFrame: DataFrame): DataFrame = {
+    dataFrame.na.drop()
+  }
+  def validate(dataFrame: DataFrame, schema: String): DataFrame= {
     dataFrame
   }
 }
