@@ -1,0 +1,32 @@
+[
+  {
+    "Column": "name",
+    "Unique_values": 2,
+    "Values": [
+      {
+        "john": 1
+      },
+      {
+        "lisa": 1
+      }
+    ]
+  },
+  {
+    "Column": "age",
+    "Unique_values": 1,
+    "Values": [
+      {
+        "26": 2
+      }
+    ]
+  },
+  {
+    "Column": "birthday",
+    "Unique_values": 1,
+    "Values": [
+      {
+        "26-01-1995": 3
+      }
+    ]
+  }
+]
