@@ -4,7 +4,8 @@ import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{Row, SQLContext}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.FunSuite
-
+import org.json4s.JsonDSL
+import org.json4s.jackson.JsonMethods._
 import scala.io.Source
 import scala.util.parsing.json._
 
@@ -28,9 +29,17 @@ class TestBaseLogic extends FunSuite {
   val testDF = context.createDataFrame(sc.parallelize(rdd), schema)
   val base = new BaseLogic()
   val source = JSON.parseFull(Source.fromURL(getClass.getResource("/excpect.json")).getLines.reduceLeft(_ + _))
-
+  val new_schema =  JSON.parseFull(Source.fromURL(getClass.getResource("/new_schema.json")).getLines.reduceLeft(_ + _))
+  val schemaList = new_schema.get.asInstanceOf[List[Map[String, String]]]
   test("check info") {
-    print(base.info(testDF.repartition(3)).show())
-    //    print(source)
+    var _df = base.validate(base.filterEmpty(testDF.repartition(3)), schemaList)
+    base.info(base.transform(_df)).show()
+  }
+
+  test("check transform") {
+    base.transform(testDF.repartition(3)).show()
+  }
+  test("check validate") {
+    assert(base.validate(testDF.repartition(3), schemaList).columns.sameElements(Array("first_name", "total_years", "d_o_b")))
   }
 }
