@@ -2,6 +2,7 @@ package net.robert.scala.spark
 
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{Row, SQLContext}
+import org.apache.spark.sql.functions._
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.FunSuite
 import org.json4s.JsonDSL
@@ -33,7 +34,22 @@ class TestBaseLogic extends FunSuite {
   val schemaList = new_schema.get.asInstanceOf[List[Map[String, String]]]
   test("check info") {
     var _df = base.validate(base.filterEmpty(testDF.repartition(3)), schemaList)
-    base.info(base.transform(_df)).show()
+    base.info(base.transform(_df)).select(explode(col("values"))).show()
+    /*
+    * +---------------+
+    |            col|
+    +---------------+
+    |[12/31/1995, 1]|
+    |[01/01/1995, 2]|
+    |      [John, 1]|
+    |      [Lisa, 1]|
+    |        [26, 2]|
+    +---------------+
+    ????
+    *
+*
+*
+* */
   }
 
   test("check transform") {

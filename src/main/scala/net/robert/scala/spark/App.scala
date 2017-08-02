@@ -24,9 +24,9 @@ object App {
     var _df = base.filterEmpty(df.repartition(3))
     _df = base.validate(_df, schemaList)
     _df = base.transform(_df)
-    base.info(_df).write.json(outPath)
+    base.info(_df).repartition(1).write.json(outPath)
 //    var df = context.createDataFrame(sc.parallelize(Seq(("a","1"),("b","2"))))
-//    df.collect().foreach(print)
+    //    df.collect().foreach(print)
   }
 
 }
