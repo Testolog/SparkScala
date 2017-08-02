@@ -7,6 +7,8 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.FunSuite
 import org.json4s.JsonDSL
 import org.json4s.jackson.JsonMethods._
+
+import scala.collection.mutable
 import scala.io.Source
 import scala.util.parsing.json._
 
@@ -34,7 +36,8 @@ class TestBaseLogic extends FunSuite {
   val schemaList = new_schema.get.asInstanceOf[List[Map[String, String]]]
   test("check info") {
     var _df = base.validate(base.filterEmpty(testDF.repartition(3)), schemaList)
-    base.info(base.transform(_df)).select(explode(col("values"))).show()
+//    base.info(base.transform(_df)).select(explode(col("values"))).show()
+    base.info(base.transform(_df)).show()
     /*
     * +---------------+
     |            col|

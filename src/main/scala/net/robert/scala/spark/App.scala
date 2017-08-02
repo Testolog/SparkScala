@@ -21,7 +21,7 @@ object App {
     val base = new BaseLogic()
     val new_schema =  JSON.parseFull(Source.fromFile(schema).getLines.reduceLeft(_ + _))
     val schemaList = new_schema.get.asInstanceOf[List[Map[String, String]]]
-    var _df = base.filterEmpty(df.repartition(3))
+    var _df = base.filterEmpty(df.repartition(1))
     _df = base.validate(_df, schemaList)
     _df = base.transform(_df)
     base.info(_df).repartition(1).write.json(outPath)
