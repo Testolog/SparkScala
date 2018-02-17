@@ -10,7 +10,6 @@ object App {
 
   def main(args: Array[String]) {
     var conf = new SparkConf()
-      .setMaster("local[2]")
       .setAppName("Test-scala")
     var sc = new SparkContext(conf)
     var context = new SQLContext(sparkContext = sc)
